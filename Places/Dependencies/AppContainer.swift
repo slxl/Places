@@ -6,6 +6,14 @@
 import Foundation
 
 struct AppContainer: AppDependencies {
-    var locationService: LocationService { LocationService() }
-    var wikipediaRouter: WikipediaRouter { WikipediaRouter() }
+    let locationService: LocationService
+    let wikipediaRouter: WikipediaRouter
+
+    init(
+        locationService: LocationService = LocationService(),
+        wikipediaRouter: WikipediaRouter = WikipediaRouter()
+    ) {
+        self.locationService = locationService
+        self.wikipediaRouter = wikipediaRouter
+    }
 }

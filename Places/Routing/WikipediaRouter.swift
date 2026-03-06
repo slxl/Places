@@ -3,7 +3,6 @@
 //  Places
 //
 
-import Foundation
 import UIKit
 
 struct WikipediaRouter {

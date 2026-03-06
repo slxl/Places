@@ -6,20 +6,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var viewModel: PlacesListViewModel
-    private let wikipediaRouter: WikipediaRouter
+    @State private var coordinator: PlacesCoordinator
 
-    init(viewModel: PlacesListViewModel, wikipediaRouter: WikipediaRouter) {
-        _viewModel = State(initialValue: viewModel)
-        self.wikipediaRouter = wikipediaRouter
+    init(coordinator: PlacesCoordinator) {
+        _coordinator = State(initialValue: coordinator)
     }
 
     var body: some View {
-        @Bindable var viewModel = viewModel
+        @Bindable var coordinator = coordinator
         NavigationStack {
-            List(viewModel.locations) { location in
+            List(coordinator.viewModel.locations) { location in
                 Button {
-                    viewModel.openLocation(location)
+                    coordinator.viewModel.openLocation(location)
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
@@ -39,12 +37,17 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Custom") {
-                        viewModel.presentCustomCoordinates()
+                        coordinator.showCustomLocation()
                     }
                 }
             }
-            .sheet(isPresented: $viewModel.showCustomCoordinates) {
-                CustomCoordinatesView(wikipediaRouter: wikipediaRouter)
+            .sheet(item: $coordinator.presentedRoute, onDismiss: {
+                coordinator.dismissRoute()
+            }) { route in
+                switch route {
+                case .customLocation:
+                    CustomCoordinatesView(wikipediaRouter: coordinator.wikipediaRouter)
+                }
             }
         }
     }
@@ -55,9 +58,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    let container = AppContainer()
-    return ContentView(
-        viewModel: PlacesListViewModel(locationService: container.locationService, wikipediaRouter: container.wikipediaRouter),
-        wikipediaRouter: container.wikipediaRouter
-    )
+    let appCoordinator = AppCoordinator(dependencies: AppContainer())
+    return ContentView(coordinator: appCoordinator.placesCoordinator)
 }

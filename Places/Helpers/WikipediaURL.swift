@@ -6,7 +6,6 @@
 import Foundation
 
 enum WikipediaURL {
-    /// Builds wikipedia://places?lat=&lon=&name= for the Wikipedia app.
     static func placesURL(lat: Double, lon: Double, name: String?) -> URL? {
         var components = URLComponents()
         components.scheme = "wikipedia"
