@@ -44,3 +44,9 @@ struct LocationService {
         defaults.set(data, forKey: customLocationsKey)
     }
 }
+
+extension LocationService: PlacesLocationsLoading {
+    func fetchAllLocations() async throws -> [Location] {
+        loadAllLocations()
+    }
+}

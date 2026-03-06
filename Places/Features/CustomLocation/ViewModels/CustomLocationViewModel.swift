@@ -1,5 +1,5 @@
 //
-//  CustomCoordinatesViewModel.swift
+//  CustomLocationViewModel.swift
 //  Places
 //
 
@@ -7,33 +7,38 @@ import Foundation
 import Observation
 
 @Observable
-final class CustomCoordinatesViewModel {
+final class CustomLocationViewModel {
     var latText = ""
     var lonText = ""
     var nameText = ""
     var errorMessage: String?
 
-    private let onSave: (Double, Double, String) -> Void
+    private weak var saver: CustomLocationSaving?
+    private let router: CustomLocationRouting
 
-    init(onSave: @escaping (Double, Double, String) -> Void) {
-        self.onSave = onSave
+    init(saver: CustomLocationSaving?, router: CustomLocationRouting) {
+        self.saver = saver
+        self.router = router
     }
 
-    /// Validates inputs, calls `onSave` if valid. Returns `true` if saved (caller should dismiss).
-    func save() -> Bool {
+    func cancel() {
+        router.trigger(.dismiss)
+    }
+
+    func save() {
         errorMessage = nil
         guard let lat = Double(latText.trimmingCharacters(in: .whitespaces)),
               lat >= -90, lat <= 90 else {
             errorMessage = "Enter a valid latitude (-90 to 90)."
-            return false
+            return
         }
         guard let lon = Double(lonText.trimmingCharacters(in: .whitespaces)),
               lon >= -180, lon <= 180 else {
             errorMessage = "Enter a valid longitude (-180 to 180)."
-            return false
+            return
         }
         let name = nameText.trimmingCharacters(in: .whitespaces)
-        onSave(lat, lon, name)
-        return true
+        saver?.addCustomLocation(lat: lat, lon: lon, name: name)
+        router.trigger(.dismiss)
     }
 }

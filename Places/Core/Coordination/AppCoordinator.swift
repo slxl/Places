@@ -4,6 +4,7 @@
 //
 
 import Observation
+import SwiftUI
 
 @Observable
 final class AppCoordinator {
@@ -11,5 +12,10 @@ final class AppCoordinator {
 
     init(dependencies: AppDependencies) {
         self.placesCoordinator = PlacesCoordinator(dependencies: dependencies)
+    }
+
+    @ViewBuilder
+    func start() -> some View {
+        placesCoordinator.start()
     }
 }

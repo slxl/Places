@@ -15,7 +15,7 @@ struct PlacesApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(coordinator: appCoordinator.placesCoordinator)
+            appCoordinator.start()
         }
     }
 }

@@ -1,20 +1,14 @@
 //
-//  CustomCoordinatesView.swift
+//  CustomLocationView.swift
 //  Places
 //
 
 import SwiftUI
 
-struct CustomCoordinatesView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State private var viewModel: CustomCoordinatesViewModel
-
-    init(onSave: @escaping (Double, Double, String) -> Void) {
-        _viewModel = State(initialValue: CustomCoordinatesViewModel(onSave: onSave))
-    }
+struct CustomLocationView: View {
+    @Bindable var viewModel: CustomLocationViewModel
 
     var body: some View {
-        @Bindable var viewModel = viewModel
         NavigationStack {
             Form {
                 Section("Coordinates") {
@@ -50,16 +44,14 @@ struct CustomCoordinatesView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        dismiss()
+                        viewModel.cancel()
                     }
                     .accessibilityLabel("Cancel")
                     .accessibilityHint("Closes without saving")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add to list") {
-                        if viewModel.save() {
-                            dismiss()
-                        }
+                        viewModel.save()
                     }
                     .accessibilityLabel("Add to list")
                     .accessibilityHint("Saves the location to the list and closes this screen")
@@ -70,5 +62,18 @@ struct CustomCoordinatesView: View {
 }
 
 #Preview {
-    CustomCoordinatesView(onSave: { _, _, _ in })
+    CustomLocationView(
+        viewModel: CustomLocationViewModel(
+            saver: PreviewCustomLocationSaver(),
+            router: PreviewCustomLocationRouter()
+        )
+    )
+}
+
+private final class PreviewCustomLocationSaver: CustomLocationSaving {
+    func addCustomLocation(lat: Double, lon: Double, name: String) {}
+}
+
+private struct PreviewCustomLocationRouter: CustomLocationRouting {
+    func trigger(_ route: CustomLocationRouteTrigger) {}
 }
