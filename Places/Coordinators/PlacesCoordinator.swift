@@ -26,4 +26,9 @@ final class PlacesCoordinator {
     func dismissRoute() {
         presentedRoute = nil
     }
+
+    func addCustomLocation(lat: Double, lon: Double, name: String) {
+        viewModel.addCustomLocation(lat: lat, lon: lon, name: name)
+        dismissRoute()
+    }
 }

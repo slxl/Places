@@ -42,11 +42,13 @@ struct ContentView: View {
             .navigationTitle("Places")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Custom") {
+                    Button {
                         coordinator.showCustomLocation()
+                    } label: {
+                        Image(systemName: "plus")
                     }
                     .accessibilityLabel("Custom location")
-                    .accessibilityHint("Enter your own coordinates to open in Wikipedia")
+                    .accessibilityHint("Add a custom location to the list")
                 }
             }
             .sheet(item: $coordinator.presentedRoute, onDismiss: {
@@ -54,7 +56,9 @@ struct ContentView: View {
             }) { route in
                 switch route {
                 case .customLocation:
-                    CustomCoordinatesView(wikipediaRouter: coordinator.wikipediaRouter)
+                    CustomCoordinatesView(onSave: { lat, lon, name in
+                        coordinator.addCustomLocation(lat: lat, lon: lon, name: name)
+                    })
                 }
             }
         }

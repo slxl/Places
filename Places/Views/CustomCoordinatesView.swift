@@ -7,32 +7,32 @@ import SwiftUI
 
 struct CustomCoordinatesView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var latText = ""
-    @State private var lonText = ""
-    @State private var nameText = ""
-    @State private var errorMessage: String?
+    @State private var viewModel: CustomCoordinatesViewModel
 
-    let wikipediaRouter: WikipediaRouter
+    init(onSave: @escaping (Double, Double, String) -> Void) {
+        _viewModel = State(initialValue: CustomCoordinatesViewModel(onSave: onSave))
+    }
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         NavigationStack {
             Form {
                 Section("Coordinates") {
-                    TextField("Latitude (-90 … 90)", text: $latText)
+                    TextField("Latitude (-90 … 90)", text: $viewModel.latText)
                         .keyboardType(.decimalPad)
                         .accessibilityLabel("Latitude")
                         .accessibilityHint("Enter latitude between minus 90 and 90")
-                    TextField("Longitude (-180 … 180)", text: $lonText)
+                    TextField("Longitude (-180 … 180)", text: $viewModel.lonText)
                         .keyboardType(.decimalPad)
                         .accessibilityLabel("Longitude")
                         .accessibilityHint("Enter longitude between minus 180 and 180")
                 }
                 Section("Name (optional)") {
-                    TextField("Place name", text: $nameText)
+                    TextField("Place name", text: $viewModel.nameText)
                         .accessibilityLabel("Place name")
                         .accessibilityHint("Optional name for the location")
                 }
-                if let errorMessage {
+                if let errorMessage = viewModel.errorMessage {
                     Section {
                         Text(errorMessage)
                             .foregroundStyle(.red)
@@ -53,37 +53,22 @@ struct CustomCoordinatesView: View {
                         dismiss()
                     }
                     .accessibilityLabel("Cancel")
-                    .accessibilityHint("Closes custom location without opening Wikipedia")
+                    .accessibilityHint("Closes without saving")
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Open in Wikipedia") {
-                        openInWikipedia()
+                    Button("Add to list") {
+                        if viewModel.save() {
+                            dismiss()
+                        }
                     }
-                    .accessibilityLabel("Open in Wikipedia")
-                    .accessibilityHint("Opens the entered coordinates in the Wikipedia app")
+                    .accessibilityLabel("Add to list")
+                    .accessibilityHint("Saves the location to the list and closes this screen")
                 }
             }
         }
     }
-
-    private func openInWikipedia() {
-        errorMessage = nil
-        guard let lat = Double(latText.trimmingCharacters(in: .whitespaces)),
-              lat >= -90, lat <= 90 else {
-            errorMessage = "Enter a valid latitude (-90 to 90)."
-            return
-        }
-        guard let lon = Double(lonText.trimmingCharacters(in: .whitespaces)),
-              lon >= -180, lon <= 180 else {
-            errorMessage = "Enter a valid longitude (-180 to 180)."
-            return
-        }
-        let name = nameText.trimmingCharacters(in: .whitespaces)
-        wikipediaRouter.openPlaces(lat: lat, lon: lon, name: name.isEmpty ? nil : name)
-        dismiss()
-    }
 }
 
 #Preview {
-    CustomCoordinatesView(wikipediaRouter: WikipediaRouter())
+    CustomCoordinatesView(onSave: { _, _, _ in })
 }
