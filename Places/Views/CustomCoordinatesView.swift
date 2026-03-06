@@ -20,16 +20,28 @@ struct CustomCoordinatesView: View {
                 Section("Coordinates") {
                     TextField("Latitude (-90 … 90)", text: $latText)
                         .keyboardType(.decimalPad)
+                        .accessibilityLabel("Latitude")
+                        .accessibilityHint("Enter latitude between minus 90 and 90")
                     TextField("Longitude (-180 … 180)", text: $lonText)
                         .keyboardType(.decimalPad)
+                        .accessibilityLabel("Longitude")
+                        .accessibilityHint("Enter longitude between minus 180 and 180")
                 }
                 Section("Name (optional)") {
                     TextField("Place name", text: $nameText)
+                        .accessibilityLabel("Place name")
+                        .accessibilityHint("Optional name for the location")
                 }
                 if let errorMessage {
                     Section {
                         Text(errorMessage)
                             .foregroundStyle(.red)
+                            .lineLimit(3)
+                            .minimumScaleFactor(0.8)
+                            .dynamicTypeSize(DynamicTypeSize.accessibility1 ... DynamicTypeSize.accessibility3)
+                            .accessibilityAddTraits(.isStaticText)
+                            .accessibilityLabel("Validation error")
+                            .accessibilityValue(errorMessage)
                     }
                 }
             }
@@ -40,11 +52,15 @@ struct CustomCoordinatesView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .accessibilityLabel("Cancel")
+                    .accessibilityHint("Closes custom location without opening Wikipedia")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Open in Wikipedia") {
                         openInWikipedia()
                     }
+                    .accessibilityLabel("Open in Wikipedia")
+                    .accessibilityHint("Opens the entered coordinates in the Wikipedia app")
                 }
             }
         }

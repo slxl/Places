@@ -23,15 +23,21 @@ struct ContentView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(location.name)
                                 .font(.headline)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.8)
                             Text("\(formatCoord(location.lat)), \(formatCoord(location.lon))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                                .lineLimit(1)
                         }
                         Spacer()
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundStyle(.secondary)
                     }
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("\(location.name), \(formatCoord(location.lat)), \(formatCoord(location.lon))")
+                .accessibilityHint("Opens this place in Wikipedia app")
             }
             .navigationTitle("Places")
             .toolbar {
@@ -39,6 +45,8 @@ struct ContentView: View {
                     Button("Custom") {
                         coordinator.showCustomLocation()
                     }
+                    .accessibilityLabel("Custom location")
+                    .accessibilityHint("Enter your own coordinates to open in Wikipedia")
                 }
             }
             .sheet(item: $coordinator.presentedRoute, onDismiss: {
