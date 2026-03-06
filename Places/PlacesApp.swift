@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct PlacesApp: App {
+    private let container = AppContainer()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(
+                viewModel: PlacesListViewModel(
+                    locationService: container.locationService,
+                    wikipediaRouter: container.wikipediaRouter
+                ),
+                wikipediaRouter: container.wikipediaRouter
+            )
         }
     }
 }

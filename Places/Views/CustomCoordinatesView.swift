@@ -12,6 +12,8 @@ struct CustomCoordinatesView: View {
     @State private var nameText = ""
     @State private var errorMessage: String?
 
+    let wikipediaRouter: WikipediaRouter
+
     var body: some View {
         NavigationStack {
             Form {
@@ -61,15 +63,11 @@ struct CustomCoordinatesView: View {
             return
         }
         let name = nameText.trimmingCharacters(in: .whitespaces)
-        guard let url = WikipediaURL.placesURL(lat: lat, lon: lon, name: name.isEmpty ? nil : name) else {
-            errorMessage = "Could not build URL."
-            return
-        }
-        UIApplication.shared.open(url)
+        wikipediaRouter.openPlaces(lat: lat, lon: lon, name: name.isEmpty ? nil : name)
         dismiss()
     }
 }
 
 #Preview {
-    CustomCoordinatesView()
+    CustomCoordinatesView(wikipediaRouter: WikipediaRouter())
 }

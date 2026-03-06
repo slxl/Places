@@ -6,7 +6,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var viewModel = PlacesListViewModel()
+    @State private var viewModel: PlacesListViewModel
+    private let wikipediaRouter: WikipediaRouter
+
+    init(viewModel: PlacesListViewModel, wikipediaRouter: WikipediaRouter) {
+        _viewModel = State(initialValue: viewModel)
+        self.wikipediaRouter = wikipediaRouter
+    }
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -38,7 +44,7 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $viewModel.showCustomCoordinates) {
-                CustomCoordinatesView()
+                CustomCoordinatesView(wikipediaRouter: wikipediaRouter)
             }
         }
     }
@@ -49,5 +55,9 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    let container = AppContainer()
+    return ContentView(
+        viewModel: PlacesListViewModel(locationService: container.locationService, wikipediaRouter: container.wikipediaRouter),
+        wikipediaRouter: container.wikipediaRouter
+    )
 }
