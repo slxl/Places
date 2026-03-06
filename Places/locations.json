@@ -1,0 +1,7 @@
+[
+  { "name": "Amsterdam", "lat": 52.3676, "lon": 4.9041 },
+  { "name": "Paris", "lat": 48.8566, "lon": 2.3522 },
+  { "name": "Berlin", "lat": 52.5200, "lon": 13.4050 },
+  { "name": "London", "lat": 51.5074, "lon": -0.1278 },
+  { "name": "Rome", "lat": 41.9028, "lon": 12.4964 }
+]
