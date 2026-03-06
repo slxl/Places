@@ -42,7 +42,9 @@ extension PlacesCoordinator: PlacesListRouteCoordinating {
             let customLocationCoordinator = CustomLocationCoordinator(
                 saver: viewModel,
                 onDismiss: { [weak self] in
-                    self?.dismissPresentedRoute()
+                    guard let self else { return }
+                    // Defer so we don't release the viewModel while still inside viewModel.cancel()/save()
+                    DispatchQueue.main.async { self.dismissPresentedRoute() }
                 }
             )
             self.customLocationCoordinator = customLocationCoordinator

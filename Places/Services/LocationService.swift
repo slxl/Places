@@ -5,10 +5,17 @@
 
 import Foundation
 
-private let customLocationsKey = "Places.customLocations"
-
 struct LocationService {
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
+    private let customLocationsKey: String
+
+    init(
+        defaults: UserDefaults = .standard,
+        customLocationsKey: String = "Places.customLocations"
+    ) {
+        self.defaults = defaults
+        self.customLocationsKey = customLocationsKey
+    }
 
     /// Loads baseline locations from bundled locations.json.
     func loadLocations() -> [Location] {
